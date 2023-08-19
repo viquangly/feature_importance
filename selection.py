@@ -163,7 +163,7 @@ class RecursiveFeatureSelection:
 
         :param X: pd.DataFrame; the input features.
 
-        :param y: Arraylike; the target feature.
+        :param y: ArrayLike; the target feature.
 
         :return: None
         """
@@ -177,7 +177,7 @@ class RecursiveFeatureSelection:
 
         :param X: pd.DataFrame; the input features.
 
-        :param y: Arraylike; the target feature.
+        :param y: ArrayLike; the target feature.
 
         :param kwargs: keyword arguments to pass to estimator.fit()
 
