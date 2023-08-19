@@ -155,20 +155,16 @@ class RecursiveFeatureSelection:
             return int(self.n_remove * self._get_previous_n_features())
         return self.n_remove
 
-    def _get_importance(self, estimator: Estimator, X: pd.DataFrame, y: ArrayLike) -> None:
+    def _get_importance(self) -> None:
         """
         Get the feature importance of the current iteration's estimator.
 
-        :param estimator: estimator object.
-
-        :param X: pd.DataFrame; the input features.
-
-        :param y: ArrayLike; the target feature.
-
         :return: None
         """
+        estimator = self.estimators[-1]
+        features = self.input_features[-1]
         self.feature_importances.append(
-            self.importance_calculator.get_importance(estimator, X, y)
+            self.importance_calculator.get_importance(estimator, features)
         )
 
     def fit(self, X: pd.DataFrame, y: ArrayLike, **kwargs) -> None:
@@ -201,7 +197,7 @@ class RecursiveFeatureSelection:
             estimator.fit(X, y, **kwargs)
             self.estimators.append(estimator)
             self.input_features.append(list(X.columns))
-            self._get_importance(estimator, X, y)
+            self._get_importance()
 
             if self.verbose:
                 n_features = self._get_previous_n_features()

@@ -32,7 +32,7 @@ class FeatureImportance(ABC):
     Base class FeatureImportance for calculating feature importance
     """
     @abstractmethod
-    def get_importance(self, estimator, X: pd.DataFrame, y: ArrayLike) -> pd.DataFrame:
+    def get_importance(self, estimator, features: List[str]) -> pd.DataFrame:
         ...
 
 
@@ -40,45 +40,47 @@ class DefaultImportance(FeatureImportance):
     """
     class DefaultImportance which uses the feature_importances_ attribute after an estimator has been fitted
     """
-    def get_importance(self, estimator: Estimator, X: pd.DataFrame, y: ArrayLike) -> pd.DataFrame:
+    def get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
         """
         Get the feature importance.
 
         :param estimator: a fitted model object.
 
-        :param X: pd.DataFrame; the input features.
-
-        :param y: Arraylike; the target variable
+        :param features: list of str; the input features.
 
         :return: pd.DataFrame
         """
-        return _sort_importance(list(X.columns), estimator.feature_importances_)
+        return _sort_importance(features, estimator.feature_importances_)
 
 
 class PermutationImportance(FeatureImportance):
     """
     class PermutationImportance for calculating feature importance using sklearn.inspection.permutation_importance.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, X: pd.DataFrame, y: ArrayLike, **kwargs):
         """
         Instantiate an object of class PermutationImportance
 
+        :param X: pd.DataFrame; the input features
+
+        :param y: ArrayLike; the target feature
+
         :param kwargs: keyword arguments to pass to sklearn.inspection.permutation_importance
         """
+        self.X = X
+        self.y = y
         self.kwargs = kwargs
 
-    def get_importance(self, estimator, X: pd.DataFrame, y: ArrayLike) -> pd.DataFrame:
+    def get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
         """
         Get the feature importance.
 
         :param estimator: a fitted model object.
 
-        :param X: pd.DataFrame; the input features.
-
-        :param y: Arraylike; the target variable
+        :param features: list of str; the input features.
 
         :return: pd.DataFrame
         """
-        features = list(X.columns)
-        values = permutation_importance(estimator, X, y, **self.kwargs).importances_mean
+
+        values = permutation_importance(estimator, self.X[features], self.y, **self.kwargs).importances_mean
         return _sort_importance(features, values)
