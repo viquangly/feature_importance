@@ -1,4 +1,5 @@
 
+from __future__ import annotations
 from typing import Tuple
 
 import matplotlib.pyplot as plt
@@ -26,7 +27,7 @@ class BinaryClassificationVisualizer:
         self.scores = None
         self.scored = False
 
-    def reset_scores(self) -> None:
+    def _reset_scores(self) -> None:
         """
         Reset the scores attribute.
 
@@ -35,7 +36,7 @@ class BinaryClassificationVisualizer:
         self.scores = {x: [] for x in BinaryClassificationVisualizer.allowable_metrics}
         self.scored = False
 
-    def score(self, X: pd.DataFrame, y: ArrayLike, threshold: float = 0.5):
+    def score(self, X: pd.DataFrame, y: ArrayLike, threshold: float = 0.5) -> BinaryClassificationVisualizer:
         """
         Calculate the AUC, precision, recall, and F1 metrics across all models.
 
@@ -45,9 +46,9 @@ class BinaryClassificationVisualizer:
 
         :param threshold: float; default is 0.5.
 
-        :return: None
+        :return: self
         """
-        self.reset_scores()
+        self._reset_scores()
         pred_probas = [x[:, 1] for x in self.rfs.predict_proba(X)]
         for pred_proba in pred_probas:
             pred = np.where(pred_proba >= threshold, 1, 0)
@@ -55,6 +56,7 @@ class BinaryClassificationVisualizer:
             self.scores['precision'].append(precision_score(y, pred))
             self.scores['recall'].append(recall_score(y, pred))
             self.scores['f1'].append(f1_score(y, pred))
+        return self
 
     def plot(self, metric: str, xtick_interval: int = 5, ytick_interval: float = 0.05, *args, **kwargs) -> Tuple:
         """
