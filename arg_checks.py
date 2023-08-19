@@ -1,5 +1,6 @@
 
 from typing import Optional, Union
+from sklearn.linear_model import LogisticRegression
 import importance as imp
 
 Numeric = Union[float, int]
@@ -38,11 +39,14 @@ def check_max_iter(value: Optional[int]) -> Numeric:
     return value
 
 
-def check_importance_calculator(value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
+def check_importance_calculator(model, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
     if value is None:
-        return imp.DefaultImportance()
+        value = imp.DefaultImportance()
 
     if not isinstance(value, imp.FeatureImportance):
         raise TypeError('importance_calculator must be of type FeatureImportance')
+
+    if isinstance(model, LogisticRegression) and isinstance(value, imp.DefaultImportance):
+        raise ValueError('Cannot use DefaultImportance with LogisticRegression.  Use PermutationImportance instead.')
 
     return value

@@ -25,7 +25,7 @@ class RecursiveFeatureSelection:
         self.input_features = []
         self.models = []
         self.feature_importances = []
-        self.importance_calculator = ac.check_importance_calculator(importance_calculator)
+        self.importance_calculator = ac.check_importance_calculator(model, importance_calculator)
 
     def __len__(self):
         return len(self.models)
