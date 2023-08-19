@@ -36,6 +36,5 @@ rfs_vis = FeatureSelectionVisualizer(rfs)
 rfs_vis.score(X_test, y_test)
 rfs_vis.plot('f1')
 
-
 rfs_pi = RecursiveFeatureSelection(rf, 5, importance_calculator=imp.PermutationImportance())
 rfs_pi.fit(X_train, y_train)

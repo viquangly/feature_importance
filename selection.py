@@ -15,26 +15,26 @@ import arg_checks as ac
 class RecursiveFeatureSelection:
 
     def __init__(
-            self, model, n_remove: Union[int, float], min_features: int = 1, max_iter: Optional[int] = None,
+            self, estimator, n_remove: Union[int, float], min_features: int = 1, max_iter: Optional[int] = None,
             importance_calculator: Optional[imp.FeatureImportance] = None
     ):
-        self.base_model = model
+        self.base_estimator = estimator
         self.n_remove = ac.check_n_remove(n_remove)
         self.min_features = ac.check_min_features(min_features)
         self.max_iter = ac.check_max_iter(max_iter)
         self.input_features = []
-        self.models = []
+        self.estimators = []
         self.feature_importances = []
-        self.importance_calculator = ac.check_importance_calculator(model, importance_calculator)
+        self.importance_calculator = ac.check_importance_calculator(estimator, importance_calculator)
 
     def __len__(self):
-        return len(self.models)
+        return len(self.estimators)
 
     def __getitem__(self, index: int):
-        return self.models[index], self.input_features[index], self.feature_importances[index]
+        return self.estimators[index], self.input_features[index], self.feature_importances[index]
 
     def _copy(self):
-        return deepcopy(self.base_model)
+        return deepcopy(self.base_estimator)
 
     def _stop_for_max_iter(self, curr_iter: int) -> bool:
         return curr_iter >= self.max_iter
@@ -75,7 +75,7 @@ class RecursiveFeatureSelection:
             raise TypeError('X must be of type pd.DataFrame')
 
         self.input_features = []
-        self.models = []
+        self.estimators = []
         self.feature_importances = []
 
         nrows, ncols = X.shape
@@ -84,11 +84,11 @@ class RecursiveFeatureSelection:
         i = 0
 
         while True:
-            model = self._copy()
-            model.fit(X, y, **kwargs)
-            self.models.append(model)
+            estimator = self._copy()
+            estimator.fit(X, y, **kwargs)
+            self.estimators.append(estimator)
             self.input_features.append(list(X.columns))
-            self._get_importance(model, X, y)
+            self._get_importance(estimator, X, y)
 
             i += 1
             n_features_to_remove = self._calculate_n_remove()
@@ -106,12 +106,12 @@ class RecursiveFeatureSelection:
     def predict(self, X: pd.DataFrame) -> List[ArrayLike]:
         if not isinstance(X, pd.DataFrame):
             raise TypeError('X must be of type pd.DataFrame')
-        return [model.predict(X[features]) for features, model in zip(self.input_features, self.models)]
+        return [estimator.predict(X[features]) for features, estimator in zip(self.input_features, self.estimators)]
 
     def predict_proba(self, X: pd.DataFrame) -> List[ArrayLike]:
         if not isinstance(X, pd.DataFrame):
             raise TypeError('X must be of type pd.DataFrame')
-        return [model.predict_proba(X[features]) for features, model in zip(self.input_features, self.models)]
+        return [estimator.predict_proba(X[features]) for features, estimator in zip(self.input_features, self.estimators)]
 
 
 class FeatureSelectionVisualizer:

@@ -39,14 +39,14 @@ def check_max_iter(value: Optional[int]) -> Numeric:
     return value
 
 
-def check_importance_calculator(model, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
+def check_importance_calculator(estimator, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
     if value is None:
         value = imp.DefaultImportance()
 
     if not isinstance(value, imp.FeatureImportance):
         raise TypeError('importance_calculator must be of type FeatureImportance')
 
-    if isinstance(model, LogisticRegression) and isinstance(value, imp.DefaultImportance):
+    if isinstance(estimator, LogisticRegression) and isinstance(value, imp.DefaultImportance):
         raise ValueError('Cannot use DefaultImportance with LogisticRegression.  Use PermutationImportance instead.')
 
     return value
