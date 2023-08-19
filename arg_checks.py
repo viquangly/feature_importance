@@ -7,6 +7,13 @@ from _typing import Numeric, Estimator
 
 
 def _check_n_remove(value: Numeric) -> Numeric:
+    """
+    Helper function to check n_remove argument is acceptable.
+
+    :param value: numeric; n_remove argument
+
+    :return: numeric
+    """
     if isinstance(value, int):
         if value < 1:
             raise ValueError('When n_remove is of type int, value must be >= 1')
@@ -19,6 +26,13 @@ def _check_n_remove(value: Numeric) -> Numeric:
 
 
 def _check_min_features(value: Numeric) -> Numeric:
+    """
+    Helper function to check if min_features argument is acceptable.
+
+    :param value: numeric; min_features argument
+
+    :return: numeric
+    """
     if isinstance(value, int):
         if value < 1:
             raise ValueError('When min_features is of type int, value must be >= 1')
@@ -31,6 +45,13 @@ def _check_min_features(value: Numeric) -> Numeric:
 
 
 def _check_max_iter(value: Optional[int]) -> Numeric:
+    """
+    Helper function to check if max_iter argument is acceptable.
+
+    :param value: optional; int.  The max_iter argument.
+
+    :return: numeric
+    """
     if value is None:
         return float('inf')
     elif isinstance(value, int):
@@ -45,6 +66,15 @@ def _check_max_iter(value: Optional[int]) -> Numeric:
 def _check_importance_calculator(
         estimator: Estimator, value: Optional[imp.FeatureImportance]
 ) -> imp.FeatureImportance:
+    """
+    Check if the importance_calculator argument is acceptable.
+
+    :param estimator: a fitted model object.
+
+    :param value: optional; FeatureImportance.  The importance_calculator argument.
+
+    :return: FeatureImportance
+    """
     if value is None:
         value = imp.DefaultImportance()
 
