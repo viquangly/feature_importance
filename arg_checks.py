@@ -1,9 +1,9 @@
 
-from typing import Optional, Union
+from typing import Optional
 from sklearn.linear_model import LogisticRegression
 import importance as imp
 
-Numeric = Union[float, int]
+from _typing import Numeric, Estimator
 
 
 def _check_n_remove(value: Numeric) -> Numeric:
@@ -42,7 +42,9 @@ def _check_max_iter(value: Optional[int]) -> Numeric:
     return value
 
 
-def _check_importance_calculator(estimator, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
+def _check_importance_calculator(
+        estimator: Estimator, value: Optional[imp.FeatureImportance]
+) -> imp.FeatureImportance:
     if value is None:
         value = imp.DefaultImportance()
 

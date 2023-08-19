@@ -8,6 +8,7 @@ import pandas as pd
 
 import importance as imp
 import arg_checks as ac
+from _typing import Estimator, Numeric
 
 
 def timestamp() -> str:
@@ -17,7 +18,7 @@ def timestamp() -> str:
 class RecursiveFeatureSelection:
 
     def __init__(
-            self, estimator, n_remove: ac.Numeric, min_features: ac.Numeric = 1, max_iter: Optional[int] = None,
+            self, estimator: Estimator, n_remove: Numeric, min_features: Numeric = 1, max_iter: Optional[int] = None,
             importance_calculator: Optional[imp.FeatureImportance] = None, verbose: bool = True
     ):
         self.base_estimator = estimator
