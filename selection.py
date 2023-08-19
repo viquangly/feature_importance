@@ -1,6 +1,7 @@
 
 from copy import deepcopy
-from typing import Union, Optional, List, Tuple
+from datetime import datetime
+from typing import Optional, List
 
 from numpy.typing import ArrayLike
 import pandas as pd
@@ -9,11 +10,15 @@ import importance as imp
 import arg_checks as ac
 
 
+def timestamp() -> str:
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
 class RecursiveFeatureSelection:
 
     def __init__(
             self, estimator, n_remove: ac.Numeric, min_features: ac.Numeric = 1, max_iter: Optional[int] = None,
-            importance_calculator: Optional[imp.FeatureImportance] = None
+            importance_calculator: Optional[imp.FeatureImportance] = None, verbose: bool = True
     ):
         self.base_estimator = estimator
         self.n_remove = ac.check_n_remove(n_remove)
@@ -23,6 +28,7 @@ class RecursiveFeatureSelection:
         self.estimators = []
         self.feature_importances = []
         self.importance_calculator = ac.check_importance_calculator(estimator, importance_calculator)
+        self.verbose = verbose
 
     def __len__(self):
         return len(self.estimators)
@@ -86,6 +92,10 @@ class RecursiveFeatureSelection:
             self.estimators.append(estimator)
             self.input_features.append(list(X.columns))
             self._get_importance(estimator, X, y)
+
+            if self.verbose:
+                n_features = self._get_previous_n_features()
+                print(f'Iteration {i} - Fitted {n_features} features - {timestamp()}')
 
             i += 1
             n_features_to_remove = self._calculate_n_remove()
