@@ -2,7 +2,8 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from selection import RecursiveFeatureSelection, FeatureSelectionVisualizer
+from selection import RecursiveFeatureSelection
+from plot import BinaryClassificationVisualizer
 import importance as imp
 
 
@@ -32,7 +33,7 @@ rf = RandomForestClassifier()
 rfs = RecursiveFeatureSelection(rf, 5)
 rfs.fit(X_train, y_train)
 
-rfs_vis = FeatureSelectionVisualizer(rfs)
+rfs_vis = BinaryClassificationVisualizer(rfs)
 rfs_vis.score(X_test, y_test)
 rfs_vis.plot('f1')
 
