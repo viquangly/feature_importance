@@ -19,7 +19,7 @@ class BinaryClassificationVisualizer:
         self.scores = None
 
     def create_score_dict(self):
-        self.scores = {x: [] for x in FeatureSelectionVisualizer.allowable_metrics}
+        self.scores = {x: [] for x in BinaryClassificationVisualizer.allowable_metrics}
 
     def score(self, X: pd.DataFrame, y: ArrayLike, threshold: float = 0.5):
         self.create_score_dict()
@@ -32,8 +32,8 @@ class BinaryClassificationVisualizer:
             self.scores['f1'].append(f1_score(y, pred))
 
     def plot(self, metric: str, xtick_interval: int = 5, ytick_interval: float = 0.05, *args, **kwargs) -> Tuple:
-        if metric not in FeatureSelectionVisualizer.allowable_metrics:
-            raise ValueError(f'metric must be one of the following: {FeatureSelectionVisualizer.allowable_metrics}')
+        if metric not in BinaryClassificationVisualizer.allowable_metrics:
+            raise ValueError(f'metric must be one of the following: {BinaryClassificationVisualizer.allowable_metrics}')
 
         y = self.scores[metric]
         plt.figure()
