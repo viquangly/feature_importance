@@ -12,5 +12,3 @@ class Estimator(Protocol):
 
     def predict(self, *args, **kwargs):
         ...
-
-
