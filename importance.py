@@ -7,11 +7,11 @@ import pandas as pd
 from sklearn.inspection import permutation_importance
 
 
-def _sort_importance(features: List[str], values: ArrayLike) -> pd.DataFrame:
+def _sort_importance(features: List[str], values: ArrayLike, ascending: bool = False) -> pd.DataFrame:
     return pd.DataFrame({
         'feature': features,
         'importance': values
-    }).sort_values('importance', ascending=False).reset_index(drop=True)
+    }).sort_values('importance', ascending=ascending).reset_index(drop=True)
 
 
 class FeatureImportance(ABC):
