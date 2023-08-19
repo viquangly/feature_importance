@@ -12,7 +12,7 @@ import arg_checks as ac
 class RecursiveFeatureSelection:
 
     def __init__(
-            self, estimator, n_remove: Union[int, float], min_features: int = 1, max_iter: Optional[int] = None,
+            self, estimator, n_remove: ac.Numeric, min_features: ac.Numeric = 1, max_iter: Optional[int] = None,
             importance_calculator: Optional[imp.FeatureImportance] = None
     ):
         self.base_estimator = estimator
