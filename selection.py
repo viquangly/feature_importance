@@ -21,13 +21,13 @@ class RecursiveFeatureSelection:
             importance_calculator: Optional[imp.FeatureImportance] = None, verbose: bool = True
     ):
         self.base_estimator = estimator
-        self.n_remove = ac.check_n_remove(n_remove)
-        self.min_features = ac.check_min_features(min_features)
-        self.max_iter = ac.check_max_iter(max_iter)
+        self.n_remove = ac._check_n_remove(n_remove)
+        self.min_features = ac._check_min_features(min_features)
+        self.max_iter = ac._check_max_iter(max_iter)
         self.input_features = []
         self.estimators = []
         self.feature_importances = []
-        self.importance_calculator = ac.check_importance_calculator(estimator, importance_calculator)
+        self.importance_calculator = ac._check_importance_calculator(estimator, importance_calculator)
         self.verbose = verbose
 
     def __len__(self):

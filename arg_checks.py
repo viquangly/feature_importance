@@ -6,7 +6,7 @@ import importance as imp
 Numeric = Union[float, int]
 
 
-def check_n_remove(value: Numeric) -> Numeric:
+def _check_n_remove(value: Numeric) -> Numeric:
     if isinstance(value, int):
         if value < 1:
             raise ValueError('When n_remove is of type int, value must be >= 1')
@@ -18,7 +18,7 @@ def check_n_remove(value: Numeric) -> Numeric:
     return value
 
 
-def check_min_features(value: Numeric) -> Numeric:
+def _check_min_features(value: Numeric) -> Numeric:
     if isinstance(value, int):
         if value < 1:
             raise ValueError('When min_features is of type int, value must be >= 1')
@@ -30,7 +30,7 @@ def check_min_features(value: Numeric) -> Numeric:
     return value
 
 
-def check_max_iter(value: Optional[int]) -> Numeric:
+def _check_max_iter(value: Optional[int]) -> Numeric:
     if value is None:
         return float('inf')
     elif isinstance(value, int):
@@ -42,7 +42,7 @@ def check_max_iter(value: Optional[int]) -> Numeric:
     return value
 
 
-def check_importance_calculator(estimator, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
+def _check_importance_calculator(estimator, value: Optional[imp.FeatureImportance]) -> imp.FeatureImportance:
     if value is None:
         value = imp.DefaultImportance()
 
