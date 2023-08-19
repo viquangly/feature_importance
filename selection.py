@@ -12,6 +12,11 @@ from _typing import Estimator, Numeric
 
 
 def timestamp() -> str:
+    """
+    Helper function to get the current timestamp.
+
+    :return: str; the current timestamp.
+    """
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
