@@ -166,7 +166,7 @@ class RecursiveFeatureSelection:
         estimator = self.estimators[-1]
         features = self.input_features[-1]
         self.feature_importances.append(
-            self.importance_calculator.get_importance(estimator, features)
+            self.importance_calculator._get_importance(estimator, features)
         )
 
     def fit(self, X: pd.DataFrame, y: ArrayLike, **kwargs) -> None:

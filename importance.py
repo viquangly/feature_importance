@@ -32,7 +32,7 @@ class FeatureImportance(ABC):
     Base class FeatureImportance for calculating feature importance
     """
     @abstractmethod
-    def get_importance(self, estimator, features: List[str]) -> pd.DataFrame:
+    def _get_importance(self, estimator, features: List[str]) -> pd.DataFrame:
         ...
 
 
@@ -40,7 +40,7 @@ class DefaultImportance(FeatureImportance):
     """
     class DefaultImportance which uses the feature_importances_ attribute after an estimator has been fitted
     """
-    def get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
+    def _get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
         """
         Get the feature importance.
 
@@ -71,7 +71,7 @@ class PermutationImportance(FeatureImportance):
         self.y = y
         self.kwargs = kwargs
 
-    def get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
+    def _get_importance(self, estimator: Estimator, features: List[str]) -> pd.DataFrame:
         """
         Get the feature importance.
 
