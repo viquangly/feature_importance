@@ -32,6 +32,8 @@ rf = RandomForestClassifier()
 
 rfs = RecursiveFeatureSelection(rf, 5)
 rfs.fit(X_train, y_train)
+rfs.get_feature_last_index()
+rfs.get_feature_last_index(True)
 
 rfs_vis = BinaryClassificationVisualizer(rfs)
 rfs_vis.score(X_test, y_test)

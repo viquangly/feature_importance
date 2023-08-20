@@ -1,6 +1,8 @@
 
+from collections import Counter
 from copy import deepcopy
 from datetime import datetime
+import itertools
 from typing import Optional, List, Tuple
 
 from numpy.typing import ArrayLike
@@ -241,3 +243,32 @@ class RecursiveFeatureSelection:
         return [
             estimator.predict_proba(X[features]) for features, estimator in zip(self.input_features, self.estimators)
         ]
+
+    def get_feature_last_index(self, grouped: bool = False, ascending: bool = True) -> pd.DataFrame:
+        """
+        Show the last index in which the feature appeared.
+
+        :param grouped: bool; default is False.  If False, have one row per feature.  If True, have one row per index.
+
+        :param ascending: bool; default is True.  If True, place features with lower indices (first to leave) at top
+        of table.
+
+        :return: pd.DataFrame
+        """
+
+        if not self.input_features:
+            raise ValueError('object has not been fitted.  Call .fit() method first.')
+
+        last_index = pd.DataFrame(
+            Counter(itertools.chain(*self.input_features)).items(),
+            columns=['feature', 'last_index']
+        ).sort_values('feature')
+        shift_for_0index = 1
+        last_index['last_index'] -= shift_for_0index
+
+        if grouped:
+            last_index = last_index.groupby('last_index')['feature'].apply(lambda x: ', '.join(x)).reset_index()
+
+        return last_index[['last_index', 'feature']].sort_values(
+            ['last_index', 'feature'], ascending=[ascending, True]
+        ).reset_index(drop=True)
