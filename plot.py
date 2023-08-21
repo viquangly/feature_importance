@@ -1,12 +1,12 @@
 
 from __future__ import annotations
-from typing import Tuple
+from typing import Tuple, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import ArrayLike
 import pandas as pd
-from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
+from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, accuracy_score
 
 from selection import RecursiveFeatureSelection
 
@@ -15,7 +15,7 @@ class BinaryClassificationVisualizer:
     """
     class BinaryClassificationVisualizer for plotting feature importance for binary classifiers
     """
-    allowable_metrics = frozenset(['auc', 'precision', 'recall', 'f1'])
+    allowable_metrics = frozenset(['auc', 'precision', 'recall', 'f1', 'accuracy'])
 
     def __init__(self, rfs: RecursiveFeatureSelection):
         """
@@ -36,7 +36,9 @@ class BinaryClassificationVisualizer:
         self.scores = {x: [] for x in BinaryClassificationVisualizer.allowable_metrics}
         self.scored = False
 
-    def score(self, X: pd.DataFrame, y: ArrayLike, threshold: float = 0.5) -> BinaryClassificationVisualizer:
+    def score(
+            self, X: pd.DataFrame, y: ArrayLike, threshold: float = 0.5, sample_weight: Optional[ArrayLike] = None
+    ) -> BinaryClassificationVisualizer:
         """
         Calculate the AUC, precision, recall, and F1 metrics across all models.
 
@@ -46,16 +48,19 @@ class BinaryClassificationVisualizer:
 
         :param threshold: float; default is 0.5.
 
+        :param sample_weight: optional; ArrayLike; default is None.  The sample weights for scoring.
+
         :return: self
         """
         self._reset_scores()
         pred_probas = [x[:, 1] for x in self.rfs.predict_proba(X)]
         for pred_proba in pred_probas:
             pred = np.where(pred_proba >= threshold, 1, 0)
-            self.scores['auc'].append(roc_auc_score(y, pred_proba))
-            self.scores['precision'].append(precision_score(y, pred))
-            self.scores['recall'].append(recall_score(y, pred))
-            self.scores['f1'].append(f1_score(y, pred))
+            self.scores['accuracy'].append(accuracy_score(y, pred, sample_weight=sample_weight))
+            self.scores['auc'].append(roc_auc_score(y, pred_proba, sample_weight=sample_weight))
+            self.scores['precision'].append(precision_score(y, pred, sample_weight=sample_weight))
+            self.scores['recall'].append(recall_score(y, pred, sample_weight=sample_weight))
+            self.scores['f1'].append(f1_score(y, pred, sample_weight=sample_weight))
         self.scored = True
         return self
 
@@ -91,3 +96,13 @@ class BinaryClassificationVisualizer:
         plt.ylim((0, 1))
         plt.grid()
         return plt.gcf(), plt.gca()
+
+    def get_scores(self) -> pd.DataFrame:
+        """
+        Get the performance metrics of each iteration.
+
+        :return: pd.DataFrame
+        """
+        out = pd.DataFrame(self.scores)
+        out['iteration'] = list(range(len(out)))
+        return out
