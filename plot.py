@@ -56,6 +56,7 @@ class BinaryClassificationVisualizer:
             self.scores['precision'].append(precision_score(y, pred))
             self.scores['recall'].append(recall_score(y, pred))
             self.scores['f1'].append(f1_score(y, pred))
+        self.scored = True
         return self
 
     def plot(self, metric: str, xtick_interval: int = 5, ytick_interval: float = 0.05, *args, **kwargs) -> Tuple:
